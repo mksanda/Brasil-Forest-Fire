@@ -1,0 +1,187 @@
+---
+title: "Brazil Forest Fire Analysis"
+author: "Mark Sanda"
+date: "6/11/2020"
+output: html_document
+---
+
+
+## load packages
+
+```{r cars}
+library(tidyverse)
+```
+
+## load data
+
+```{r}
+brazil_fire <- read_csv("C:/Users/pc/Desktop/ALL/R/brazilfire/amazon.csv")
+```
+
+## view first five rows of data
+
+```{r}
+head(brazil_fire)
+```
+
+## check for missing values in the dataframe
+
+```{r}
+sum(is.na(brazil_fire))
+```
+## average fire cases
+
+```{r}
+brazil_fire2 <- brazil_fire %>%
+  group_by(year) %>%
+  summarise(average_fire = mean(number))
+```
+
+```{r}
+brazil_fire2
+```
+
+## round up numbers to 0 decimal place
+```{r}
+brazil_fire2[,2] <- round(brazil_fire2[,2],0)
+brazil_fire2
+```
+
+## Plot showing average fire outbreak
+```{r}
+ggplot(brazil_fire2, aes(year, average_fire)) +
+  geom_line() +
+  labs(x = "Year", y = "Average Number of Forest Fire") +
+  ggtitle("Plot of Average Forest Fire in Brazil")
+```
+
+
+## filter northern states
+```{r}
+northern_states <- c("Amazonas", "Roraima", "Amapa", "Tocantins", "Rondonia", "Acre")
+north <- brazil_fire %>%
+  filter(state %in% northern_states)
+north
+```
+
+## view states in the north
+```{r}
+distinct(north, state)
+```
+```{r}
+north
+```
+
+
+```{r}
+round_north <- north %>%
+  mutate(number = round(number, 0))%>%
+  filter(number>=1)
+```
+
+```{r}
+round_north
+```
+
+```{r}
+min(round_north$number)
+```
+
+```{r}
+a <- ggplot(round_north, aes(year, number, fill = state))+
+  geom_col(position = "dodge")+
+  labs(x = "Year", y = "Number of Fire/Year", title = "Brazil Forest Fire in Northern Region")+
+  theme_classic()
+a
+```
+
+## filter southern states
+
+```{r}
+northeast <- c("Maranhao", "Piau", "Ceara", "Pernambuco", "Paraiba", "Sergipe", "Alagoas", "Bahia")
+northeast <- brazil_fire %>%
+  filter(state %in% northeast)
+northeast
+```
+
+```{r}
+round_northeast <- northeast %>%
+  mutate(number = round(number, 0))%>%
+  filter(number>=1)
+```
+
+```{r}
+b <- ggplot(round_northeast, aes(year, number, fill = state))+
+  geom_col(position = "dodge")+
+  labs(x = "Year", y = "Number of Fire/Year", title = "Brazil Forest Fire in Northeast Region")+
+    theme_classic()
+b
+```
+
+## filter Centerwest states
+```{r}
+centerWest <- c("Mato Grosso", "Goias", "Distrito Federal")
+cwest <- brazil_fire %>%
+  filter(state %in% centerWest)
+cwest
+```
+
+```{r}
+round_cwest <- cwest %>%
+  mutate(number = round(number, 0))%>%
+  filter(number>=1)
+```
+
+```{r}
+c <- ggplot(round_cwest, aes(year, number, fill = state))+
+  geom_col(position = "dodge")+
+  labs(x = "Year", y = "Number of Fire/Year", title = "Brazil Forest Fire in CenterWest Region")+
+    theme_classic()
+```
+
+## show plot
+```{r}
+c
+```
+
+## Southeast region
+```{r}
+southeast <- c("Sao Paulo", "Rio", "Espirito Santo", "Minas Gerais")
+se <- brazil_fire %>%
+  filter(state %in% southeast)
+se
+```
+
+```{r}
+round_se <- se %>%
+  mutate(number = round(number, 0))%>%
+  filter(number>=1)
+```
+
+```{r}
+d <- ggplot(round_se, aes(year, number, fill = state))+
+  geom_col(position = "dodge")+
+  labs(x = "Year", y = "Number of Fire/Year", title = "Brazil Forest Fire in Southeast Region")+
+    theme_classic()
+d
+```
+
+```{r}
+south <- brazil_fire %>%
+  filter(state == "Santa Catarina") %>%
+  mutate(number = round(number, 0))%>%
+  filter(number>=1)
+```
+
+```{r}
+south
+```
+
+```{r}
+e <- ggplot(south, aes(year, number, fill = state))+
+  geom_col(position = "dodge")+
+  labs(x = "Year", y = "Number of Fire/Year", title = "Brazil Forest Fire in Southern Region")+
+    theme_classic()
+e
+```
+
